@@ -9,3 +9,10 @@ export const hashPassword = async (password) => {
     throw new Error("Error while hashing password");
   }
 };
+
+export const checkPassword = async (password, hashedPassword) => {
+  try {
+    const isCorrect = bcrypt.compare(password, hashedPassword);
+    return isCorrect;
+  } catch (error) {}
+};
