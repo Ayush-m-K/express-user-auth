@@ -5,22 +5,21 @@ import {
   signupValidationSchema,
 } from "../middleware/userValidator.js";
 import {
-  authenticatToken,
   resetPassword,
   login,
   signup,
   deleteUser,
+  getUser,
 } from "../controller/userController.js";
+
+import { authenticatToken } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  return res.send({ msg: "welcome" });
-});
-
+router.get("/get", authenticatToken, getUser);
 router.post("/signup", signupValidationSchema, signup);
 router.post("/login", loginValidationSchema, login);
-router.delete("/login", deleteUser);
+router.delete("/delete", authenticatToken, deleteUser);
 router.put(
   "/reset-password",
   authenticatToken,

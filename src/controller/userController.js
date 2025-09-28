@@ -3,6 +3,18 @@ import { validationResult } from "express-validator";
 import { checkPassword, hashPassword } from "../services/passwordHash.js";
 import jwt from "jsonwebtoken";
 
+export const getUser = async (req, res) => {
+  try {
+    const currentUser = await User.findOne({ username: req.user?.username });
+    if (!currentUser)
+      return res.status(404).json({ msg: "Invalid token or user not found" });
+    const { password: _, ...userData } = currentUser.toObject();
+    return res.status(201).json({ user: userData });
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal server error" });
+  }
+};
+
 export const signup = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ error: errors.array() });
