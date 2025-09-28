@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   loginValidationSchema,
+  passwordValidation,
   signupValidationSchema,
 } from "../middleware/userValidator.js";
 import {
@@ -8,6 +9,7 @@ import {
   resetPassword,
   login,
   signup,
+  deleteUser,
 } from "../controller/userController.js";
 
 const router = Router();
@@ -18,5 +20,11 @@ router.get("/", (req, res) => {
 
 router.post("/signup", signupValidationSchema, signup);
 router.post("/login", loginValidationSchema, login);
-router.post("/reset-password", authenticatToken, resetPassword);
+router.delete("/login", deleteUser);
+router.put(
+  "/reset-password",
+  authenticatToken,
+  passwordValidation,
+  resetPassword
+);
 export default router;

@@ -33,3 +33,22 @@ export const loginValidationSchema = checkSchema({
     },
   },
 });
+
+export const passwordValidation = checkSchema({
+  oldPassword: {
+    isString: { errorMessage: "Invalid password" },
+    notEmpty: { errorMessage: "password is required" },
+    isLength: {
+      options: { min: 8 },
+      errorMessage: "Password must be atleast 8 characters long",
+    },
+  },
+  newPassword: {
+    isString: { errorMessage: "Invalid password" },
+    notEmpty: { errorMessage: "password is required" },
+    isLength: {
+      options: { min: 8 },
+      errorMessage: "Password must be atleast 8 characters long",
+    },
+  },
+});
