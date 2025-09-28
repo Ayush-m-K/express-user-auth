@@ -5,6 +5,7 @@ import {
 } from "../middleware/userValidator.js";
 import {
   authenticatToken,
+  resetPassword,
   login,
   signup,
 } from "../controller/userController.js";
@@ -17,6 +18,5 @@ router.get("/", (req, res) => {
 
 router.post("/signup", signupValidationSchema, signup);
 router.post("/login", loginValidationSchema, login);
-router.post("/auth", authenticatToken);
-
+router.post("/reset-password", authenticatToken, resetPassword);
 export default router;

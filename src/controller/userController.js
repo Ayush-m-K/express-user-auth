@@ -34,13 +34,36 @@ export const login = async (req, res) => {
   try {
     const existUser = await User.findOne({ username: username });
     if (!existUser) return res.status(400).json({ msg: "User not found" });
-    if (!(await checkPassword(password, existUser.password)))
-      return res.status(400).json({ msg: "Incorrect Password" });
+    const isMatch = await checkPassword(password, existUser.password);
+    if (!isMatch) return res.status(400).json({ msg: "Incorrect Password" });
     const payload = { id: existUser.id, username: existUser.username };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
     return res.status(200).json({ accessToken: accessToken });
   } catch (error) {
     return res.status(500).json({ errMsg: error.message });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const currentUser = await User.findOne({ username: req.user.username });
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword)
+      return res
+        .status(400)
+        .json({ msg: "Both old and new passwords are required" });
+    const isMatch = await checkPassword(oldPassword, currentUser.password);
+    if (!isMatch)
+      return res.status(400).json({ msg: "Old password does not match" });
+    if (oldPassword === newPassword)
+      return res
+        .status(400)
+        .json({ msg: "New password cannot be same as old password" });
+    currentUser.password = await hashPassword(newPassword);
+    await currentUser.save();
+    return res.status(200).json({ msg: "Password reset successfully" });
+  } catch (error) {
+    return res.status(500).json({ msg: "Error reseting password" });
   }
 };
 
