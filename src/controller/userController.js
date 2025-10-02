@@ -23,11 +23,11 @@ export const signup = async (req, res) => {
     return res.status(400).json({ message: errors.array() });
   const { username, email, password } = req.body;
   try {
-    const existUser = await User.findOne({ $or: [{ username }, { email }] });
-    if (existUser) {
-      if (existUser.username === username)
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      if (existingUser.username === username)
         return res.status(400).json({ message: "Username already exists" });
-      if (existUser.email === email)
+      if (existingUser.email === email)
         return res.status(400).json({ message: "Email already exists" });
     }
     const hashedPassword = await hashPassword(password);
